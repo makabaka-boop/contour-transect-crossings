@@ -4,6 +4,10 @@
 用 marching squares 逐格描线，再把相邻格的线段拼接成**连续且确定**的等高线拓扑
 （开放折线 / 闭环），同一份结果同时驱动 SVG 渲染、折线表与下载 JSON。
 
+随后可在 SVG 上点击**两个网格顶点**画一条两端吸附的**穿越线**：分析层以全程
+BigInt 有理数逐段求精确交点，区分穿越 / 相切 / 端点接触，SVG 标记、明细表与
+下载 JSON 由同一事件数组驱动。
+
 技术栈：TypeScript + React + Vite，Vitest 单测，Docker Compose 运行。
 
 ## 运行
@@ -60,6 +64,46 @@ docker compose run --rm test   # 容器内 Vitest
 - **下载 JSON**：与界面完全相同的 `ContourResult`
   （`crossings` / `segments` / `polylines`，坐标均为 `{num, den}` 分数）。
 
+## 穿越线分析（`src/core/traverse.ts`）
+
+在 SVG 上依次点击两个网格顶点（自动吸附整数 `(row,col)`），即生成一条穿越线并分析：
+
+1. **精确相交**：穿越线段与每条已规范化折线的每个线段，用全程 **BigInt 有理数**
+   求交——承载直线唯一交点时
+   `s=(w×e)/(d×e)`、`u=(w×d)/(d×e)`，只接受 `s,u∈[0,1]`；坐标沿用现有分数表示。
+2. **顶点去重**：命中折线顶点（`u=0` 或 `u=1`）时，该顶点的两段命中合并为一个事件；
+   因此共享顶点擦过不会重复计数。
+3. **分类**：
+   - 命中开放折线端点（仅一段邻居）→ **端点接触 `endpoint`**；
+   - 顶点两侧线段另一端相对穿越线的叉积**异号** → **穿越 `cross`**；
+   - 叉积**同号** → **相切 `tangent`**；
+   - 命中线段内部恒为 `cross`。
+4. **重合拒绝**：若穿越线与任一等高线线段**共线且有正长度重叠**，明确拒绝整次分析、
+   报错并**保留上次有效穿越结果**，绝不挑一个重合端点充数；共线但仅一点相接仍按
+   普通点命中处理。（整数格点 + 半整数阈值下，相邻边型格内线段由奇偶性排除重合，
+   对边型如掩码 9 才可能重合。）
+5. **排序**：事件按沿穿越线的分数位置 `s` 升序，`s` 相同再按折线编号决胜。
+6. **单一数据源**：SVG 标记（● 穿越 / ◆ 相切 / ▲ 端点接触）、明细表与「下载穿越 JSON」
+   全部由同一 `events` 数组驱动；原等高线 SVG、折线表与其下载结果保持不变。
+7. **生命周期**：更换网格或阈值（重新「生成等高线」）或编辑输入使旧结果过期时，
+   立即撤销旧穿越分析；端点必须是网格内两个不同的整数顶点，否则拒绝。
+
+下载的穿越 JSON 形如：
+
+```json
+{
+  "levelTwice": 1,
+  "startRow": 0, "startCol": 0, "endRow": 2, "endCol": 1,
+  "events": [
+    { "s": {"num": 1, "den": 2}, "row": {"num": 1, "den": 1},
+      "col": {"num": 1, "den": 2}, "polylineId": 0,
+      "kind": "tangent", "edgeId": 2 }
+  ]
+}
+```
+
+`edgeId` 为命中顶点的边标识，命中线段内部时为 `null`。
+
 ## 目录结构
 
 ```
@@ -68,7 +112,10 @@ src/
     fraction.ts   整数分数（约分、比较、格式化）
     parse.ts      输入校验（拒绝整份非法输入）
     contour.ts    marching squares + 鞍点消歧 + 折线拼接规范化
+    traverse.ts   穿越线精确有理数相交、顶点去重、三分类、重合拒绝、稳定排序
     types.ts      GridInput / Crossing / Segment / Polyline / ContourResult
-  components/     InputPanel / ContourSvg / PolylineTable
+                  / TraverseLine / TraverseEvent / TraverseResult
+  components/     InputPanel / ContourSvg / PolylineTable / TraverseTable
   test/           Vitest：鞍点三态、闭环、边界开线、共享交点、分数、排序、校验
+                  + 穿越线（独立有理数相交预言机：鞍格/闭环/顶点去重/相切/重合）
 ```

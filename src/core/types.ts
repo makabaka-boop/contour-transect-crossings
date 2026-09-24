@@ -44,3 +44,28 @@ export interface ContourResult {
   segments: Segment[];
   polylines: Polyline[];
 }
+
+/** 交点事件分类：穿越（两侧）、相切（同侧）、端点接触（开放折线端点） */
+export type TraverseKind = 'cross' | 'tangent' | 'endpoint';
+
+/** 穿越线与一条等高线的一个交点事件 */
+export interface TraverseEvent {
+  /** 沿穿越线从起点出发的分数位置 */
+  s: Fraction;
+  row: Fraction;
+  col: Fraction;
+  /** 命中的等高线编号（对应 Polyline.id） */
+  polylineId: number;
+  kind: TraverseKind;
+  /** 命中折线顶点时为该点边标识；命中线段内部时为 null */
+  edgeId: number | null;
+}
+
+/** 一次有效的穿越线分析结果：SVG 标记、明细表与下载 JSON 共用 events */
+export interface TraverseResult {
+  startRow: number;
+  startCol: number;
+  endRow: number;
+  endCol: number;
+  events: TraverseEvent[];
+}

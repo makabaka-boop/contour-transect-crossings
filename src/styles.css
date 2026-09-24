@@ -110,6 +110,91 @@ button.primary:hover {
   background: #1a5fd0;
 }
 
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.traverse-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.traverse-toolbar .button-row {
+  margin: 0;
+}
+
+.traverse-block {
+  border: 1px solid #b6d3f5;
+  background: #f6faff;
+  border-radius: 8px;
+  padding: 8px 12px 10px;
+  margin-top: 12px;
+}
+
+.traverse-head {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.traverse-head h3 {
+  margin: 2px 0;
+  font-size: 14px;
+}
+
+.traverse-line-text {
+  font-size: 12.5px;
+  color: #0969da;
+  font-variant-numeric: tabular-nums;
+}
+
+.traverse-legend {
+  display: flex;
+  gap: 12px;
+  font-size: 12.5px;
+  color: #444c56;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.legend-item .mark {
+  font-size: 13px;
+}
+
+.traverse-table {
+  border-collapse: collapse;
+  margin-top: 8px;
+  font-size: 12.5px;
+  width: 100%;
+}
+
+.traverse-table th,
+.traverse-table td {
+  border: 1px solid #d5e3f5;
+  padding: 3px 10px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.traverse-table th {
+  background: #eaf3ff;
+}
+
+.traverse-table .kind {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
 .error {
   background: #ffebe9;
   border: 1px solid #ff818266;
