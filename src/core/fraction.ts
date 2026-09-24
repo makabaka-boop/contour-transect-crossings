@@ -35,6 +35,34 @@ export function addInteger(f: Fraction, k: number): Fraction {
   return makeFraction(f.num + k * f.den, f.den);
 }
 
+export function add(a: Fraction, b: Fraction): Fraction {
+  return makeFraction(a.num * b.den + b.num * a.den, a.den * b.den);
+}
+
+export function sub(a: Fraction, b: Fraction): Fraction {
+  return makeFraction(a.num * b.den - b.num * a.den, a.den * b.den);
+}
+
+export function mul(a: Fraction, b: Fraction): Fraction {
+  return makeFraction(a.num * b.num, a.den * b.den);
+}
+
+/** a / b，b 不能为 0 */
+export function div(a: Fraction, b: Fraction): Fraction {
+  if (b.num === 0) throw new Error('分数除法的除数不能为 0');
+  return makeFraction(a.num * b.den, a.den * b.num);
+}
+
+/** 比较两个分数：a < b 返回 -1，相等返回 0，a > b 返回 1 */
+export function cmp(a: Fraction, b: Fraction): number {
+  return Math.sign(a.num * b.den - b.num * a.den);
+}
+
+/** 符号：-1 / 0 / 1 */
+export function sign(f: Fraction): number {
+  return Math.sign(f.num);
+}
+
 export function fractionToNumber(f: Fraction): number {
   return f.num / f.den;
 }

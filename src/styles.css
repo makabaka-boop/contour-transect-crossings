@@ -255,3 +255,96 @@ button.primary:hover {
 .polyline-list th {
   background: #f6f8fa;
 }
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.transect-panel {
+  margin-top: 12px;
+}
+
+.transect-fields {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.transect-fields .field-group-label {
+  font-weight: 600;
+  color: #444c56;
+}
+
+.transect-fields label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12.5px;
+  color: #444c56;
+}
+
+.transect-fields input {
+  width: 60px;
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+  font-size: 12.5px;
+  border: 1px solid #c8cfd6;
+  border-radius: 6px;
+  padding: 4px 6px;
+  background: #fbfcfd;
+}
+
+.transect-fields input:focus {
+  outline: 2px solid #0969da33;
+  border-color: #0969da;
+}
+
+.transect-result .stats {
+  margin-top: 10px;
+}
+
+.legend {
+  color: #6a737d;
+}
+
+.transect-events {
+  max-height: 260px;
+  overflow: auto;
+  margin-top: 8px;
+}
+
+.transect-table {
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+.transect-table th,
+.transect-table td {
+  border: 1px solid #eaecef;
+  padding: 3px 10px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.transect-table th {
+  background: #f6f8fa;
+}
+
+.tag.crossing {
+  background: #ffebe9;
+  color: #cf222e;
+}
+
+.tag.tangent {
+  background: #fff8e6;
+  color: #9a6700;
+}
+
+.tag.endpoint {
+  background: #fbefff;
+  color: #8250df;
+}

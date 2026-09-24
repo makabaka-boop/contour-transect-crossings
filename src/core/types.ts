@@ -44,3 +44,43 @@ export interface ContourResult {
   segments: Segment[];
   polylines: Polyline[];
 }
+
+/** 行-列平面上的一个点，坐标沿用分数表示 */
+export interface GridPoint {
+  row: Fraction;
+  col: Fraction;
+}
+
+/** 穿越线：两端吸附网格顶点（整数行列），坐标以分数记录 */
+export interface TransectLine {
+  start: GridPoint;
+  end: GridPoint;
+}
+
+/** 穿越事件类型：穿越（前后异侧）/ 相切（前后同侧）/ 端点接触（折线开放端点） */
+export type TransectEventKind = 'crossing' | 'tangent' | 'endpoint';
+
+/** 穿越线与一条等高线折线的一次命中 */
+export interface TransectEvent {
+  /** 沿穿越线从起点出发的分数位置，位于 [0,1] */
+  t: Fraction;
+  row: Fraction;
+  col: Fraction;
+  polylineId: number;
+  kind: TransectEventKind;
+  /** 命中折线顶点时的点下标；边内部命中为 null */
+  vertexIndex: number | null;
+  /** 命中折线边内部时的线段下标；顶点命中为 null */
+  segmentIndex: number | null;
+}
+
+/** 穿越分析结果：SVG 标记、明细表与下载 JSON 共用同一事件数组 */
+export interface TransectResult {
+  line: TransectLine;
+  events: TransectEvent[];
+}
+
+/** 穿越线与任一等高线线段重合时拒绝整次分析（ok: false），调用方保留上次有效结果 */
+export type TransectAnalysis =
+  | { ok: true; result: TransectResult }
+  | { ok: false; error: string };
